@@ -1,15 +1,15 @@
 import z from "zod";
-import {UserSchema} from "../types/user.type.js";
+import {UserSchema} from "../types/user.type";
 
 export const CreateUserDTO = UserSchema.pick({
     fullname: true,
     email: true,
     password: true,
-}).extend( // add new attribute to zod
+}).extend(
     {
         confirmPassword: z.string().min(6)
     }
-).refine( // extra validation for confirmPassword
+).refine( 
     (data) => data.password === data.confirmPassword,
     {
         message: "Passwords do not match",
