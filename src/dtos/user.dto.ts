@@ -6,11 +6,10 @@ export const CreateUserDTO = UserSchema.pick({
     email: true,
     password: true,
     imageUrl: true,
-}).extend(
-    {
-        confirmPassword: z.string().min(6)
-    }
-).refine( 
+}).extend({
+    confirmPassword: z.string().min(6),
+    
+}).refine( 
     (data) => data.password === data.confirmPassword,
     {
         message: "Passwords do not match",
@@ -20,7 +19,7 @@ export const CreateUserDTO = UserSchema.pick({
 export type CreateUserDTO = z.infer<typeof CreateUserDTO>;
 
 export const LoginUserDTO = z.object({
-    email: z.email(),
+    email: z.string().email(),
     password: z.string().min(6)
 });
 export type LoginUserDTO = z.infer<typeof LoginUserDTO>;
