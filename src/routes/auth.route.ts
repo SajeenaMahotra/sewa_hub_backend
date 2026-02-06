@@ -18,8 +18,11 @@ router.put(
     authController.updateProfile
 )
 
-// router.post(
-//     "/send-reset-password-email",
-//     authController.requestPasswordChange
-// )
+router.post(
+    "/send-reset-password-email",
+    authController.requestPasswordChange
+)
+
+router.post("/request-password-reset", authController.requestPasswordChange);
+router.post("/reset-password/:token", authController.resetPassword);
 export default router;
