@@ -40,10 +40,8 @@ export class UserRepository implements IUserRepository {
         const filter: QueryFilter<IUser> = {};
         if (search) {
             filter.$or = [
-                { username: { $regex: search, $options: 'i' } },
-                { email: { $regex: search, $options: 'i' } },
-                { firstName: { $regex: search, $options: 'i' } },
-                { lastName: { $regex: search, $options: 'i' } },
+               { fullname: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } }
             ];
         }
         const [users, total] = await Promise.all([
@@ -54,7 +52,7 @@ export class UserRepository implements IUserRepository {
         ]);
         return { users, total };
     }
-    
+
     async updateUser(id: string, updateData: Partial<IUser>): Promise<IUser | null> {
         // UserModel.updateOne({ _id: id }, { $set: updateData });
         const updatedUser = await UserModel.findByIdAndUpdate(
