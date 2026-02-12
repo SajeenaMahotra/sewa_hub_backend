@@ -205,5 +205,45 @@ describe(
 
         });
 
+
+        describe('GET /api/auth/whoami', () => {
+        test('should get user profile with valid token', async () => {
+            const response = await request(app)
+                .get('/api/auth/whoami')
+                .set('Authorization', `Bearer ${authToken}`);
+            
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('success', true);
+            expect(response.body).toHaveProperty('message', 'User profile fetched successfully');
+            expect(response.body.data).toHaveProperty('email', testUser.email);
+            expect(response.body.data).toHaveProperty('fullname', testUser.fullname);
+        });
+
+        test('should not get profile without authorization token', async () => {
+            const response = await request(app)
+                .get('/api/auth/whoami');
+            
+            expect(response.status).toBe(401);
+            expect(response.body).toHaveProperty('success', false);
+        });
+
+    });
+
+    describe('PUT /api/auth/update-profile', () => {
+        test('should update user fullname', async () => {
+            const response = await request(app)
+                .put('/api/auth/update-profile')
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({ fullname: 'Updated Name' });
+            
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('success', true);
+            expect(response.body).toHaveProperty('message', 'User profile updated successfully');
+            expect(response.body.data).toHaveProperty('fullname', 'Updated Name');
+        });
+
+        
+        });
+
     }
 );
