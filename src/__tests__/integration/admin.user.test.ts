@@ -42,7 +42,7 @@ describe('Admin User Management Integration Tests', () => {
             throw new Error(`Admin registration failed: ${JSON.stringify(adminResponse.body)}`);
         }
 
-        // Manually update role to admin in database (like you do in MongoDB Compass)
+        // Manually update role to admin in database 
         await UserModel.findOneAndUpdate(
             { email: adminUser.email },
             { role: 'admin' }
