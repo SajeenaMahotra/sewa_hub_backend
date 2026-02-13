@@ -9,8 +9,8 @@ let adminUserService = new AdminUserService();
 export class AdminUserController {
     async createUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const parsedData = CreateUserDTO.safeParse(req.body); // validate request body
-            if (!parsedData.success) { // validation failed
+            const parsedData = CreateUserDTO.safeParse(req.body);
+            if (!parsedData.success) {
                 return res.status(400).json(
                     { success: false, message: z.prettifyError(parsedData.error) }
                 )
@@ -32,9 +32,9 @@ export class AdminUserController {
 
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, size, search }: QueryParams = req.query;
+            const { page, size, search, role }: QueryParams = req.query; // Add role filter
             const { users, pagination } = await adminUserService.getAllUsers(
-                page, size, search
+                page, size, search, role
             );
             return res.status(200).json(
                 { success: true, data: users, pagination: pagination, message: "All Users Retrieved" }
@@ -49,8 +49,8 @@ export class AdminUserController {
     async updateUser(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.id as string;
-            const parsedData = UpdateUserDTO.safeParse(req.body); // validate request body
-            if (!parsedData.success) { // validation failed
+            const parsedData = UpdateUserDTO.safeParse(req.body);
+            if (!parsedData.success) {
                 return res.status(400).json(
                     { success: false, message: z.prettifyError(parsedData.error) }
                 )
@@ -104,5 +104,4 @@ export class AdminUserController {
             );
         }
     }
-
 }

@@ -7,16 +7,16 @@ export interface IUserRepository {
     // 5 common database queries for entity
     createUser(userData: Partial<IUser>): Promise<IUser>;
     getUserById(id: string): Promise<IUser | null>;
-     getAllUsers(
+    getAllUsers(
         page: number, size: number, search?: string
-    ): Promise<{users: IUser[], total: number}>;
+    ): Promise<{ users: IUser[], total: number }>;
     updateUser(id: string, updateData: Partial<IUser>): Promise<IUser | null>;
     deleteUser(id: string): Promise<boolean>;
 }
 // MongoDb Implementation of UserRepository
 export class UserRepository implements IUserRepository {
     async createUser(userData: Partial<IUser>): Promise<IUser> {
-        const user = new UserModel(userData); 
+        const user = new UserModel(userData);
         return await user.save();
     }
     async getUserByEmail(email: string): Promise<IUser | null> {
@@ -35,15 +35,22 @@ export class UserRepository implements IUserRepository {
     }
 
     async getAllUsers(
-        page: number, size: number, search?: string
-    ): Promise<{users: IUser[], total: number}> {
+        page: number, size: number, search?: string, role?: string
+    ): Promise<{ users: IUser[], total: number }> {
         const filter: QueryFilter<IUser> = {};
+
         if (search) {
             filter.$or = [
-               { fullname: { $regex: search, $options: 'i' } },
-            { email: { $regex: search, $options: 'i' } }
+                { fullname: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
             ];
         }
+
+        // Add role filter if provided
+        if (role && role !== 'all') {
+            filter.role = role;
+        }
+
         const [users, total] = await Promise.all([
             UserModel.find(filter)
                 .skip((page - 1) * size)
@@ -67,4 +74,3 @@ export class UserRepository implements IUserRepository {
     }
 }
 
-    

@@ -1,6 +1,6 @@
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "../../dtos/user.dto";
 import { UserRepository } from "../../repositories/user.repository";
-import  bcryptjs from "bcryptjs"
+import bcryptjs from "bcryptjs"
 import { HttpError } from "../../errors/http-error";
 
 let userRepository = new UserRepository();
@@ -12,7 +12,7 @@ export class AdminUserService {
             throw new HttpError(403, "Email already in use");
         }
         // hash password
-        const hashedPassword = await bcryptjs.hash(data.password, 10); // 10 - complexity
+        const hashedPassword = await bcryptjs.hash(data.password, 10);
         data.password = hashedPassword;
 
         const newUser = await userRepository.createUser(data);
@@ -20,12 +20,12 @@ export class AdminUserService {
     }
 
     async getAllUsers(
-        page?: string, size?: string, search?: string
+        page?: string, size?: string, search?: string, role?: string
     ){
         const pageNumber = page ? parseInt(page) : 1;
         const pageSize = size ? parseInt(size) : 10;
         const {users, total} = await userRepository.getAllUsers(
-            pageNumber, pageSize, search
+            pageNumber, pageSize, search, role
         );
         const pagination = {
             page: pageNumber,
@@ -54,12 +54,11 @@ export class AdminUserService {
         return updatedUser;
     }
 
-    async  getUserById(id: string){
+    async getUserById(id: string){
         const user = await userRepository.getUserById(id);
         if(!user){
             throw new HttpError(404, "User not found");
         }
         return user;
     }
-
-}  
+}
