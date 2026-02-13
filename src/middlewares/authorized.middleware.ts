@@ -54,3 +54,40 @@ export const adminMiddleware = async (
         )
     }
 }
+
+export const providerMiddleware = async (
+    req: Request, res: Response, next: NextFunction
+) => {
+    try {
+        if (!req.user) {
+            throw new HttpError(401, 'Unauthorized no user info');
+        }
+        if (req.user.role !== 'provider') {
+            throw new HttpError(403, 'Forbidden not a service provider');
+        }
+        return next();
+    } catch (err: Error | any) {
+        return res.status(err.statusCode || 500).json(
+            { success: false, message: err.message }
+        )
+    }
+}
+
+// NEW: Add customer middleware (for user role)
+export const customerMiddleware = async (
+    req: Request, res: Response, next: NextFunction
+) => {
+    try {
+        if (!req.user) {
+            throw new HttpError(401, 'Unauthorized no user info');
+        }
+        if (req.user.role !== 'user') {
+            throw new HttpError(403, 'Forbidden not a customer');
+        }
+        return next();
+    } catch (err: Error | any) {
+        return res.status(err.statusCode || 500).json(
+            { success: false, message: err.message }
+        )
+    }
+}

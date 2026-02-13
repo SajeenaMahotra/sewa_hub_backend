@@ -5,6 +5,7 @@ export const CreateUserDTO = UserSchema.pick({
     fullname: true,
     email: true,
     password: true,
+    role: true,
     imageUrl: true,
 }).extend({
     confirmPassword: z.string().min(6),
