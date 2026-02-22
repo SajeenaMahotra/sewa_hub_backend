@@ -8,6 +8,9 @@ const providerService = new ProviderService();
 export class ProviderController {
 
     async setupProfile(req: Request, res: Response) {
+        console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
         try {
             const userId = req.user?._id;
             if (!userId) {
