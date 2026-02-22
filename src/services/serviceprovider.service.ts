@@ -1,8 +1,10 @@
 import { HttpError } from "../errors/http-error";
 import { CreateProviderProfileDTO, UpdateProviderProfileDTO } from "../dtos/serviceprovider";
 import { ServiceProviderRepository } from "../repositories/serviceprovider.repository";
+import { UserRepository } from "../repositories/user.repository";
 
 const providerRepo = new ServiceProviderRepository();
+const userRepo = new UserRepository();
 
 export class ProviderService {
 
@@ -19,6 +21,8 @@ export class ProviderService {
             is_verified: 0,
             rating: 0,
         });
+
+        await userRepo.updateUser(userId, { isProfileSetup: true } as any);
 
         return profile;
     }

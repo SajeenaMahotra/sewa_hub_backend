@@ -10,6 +10,7 @@ const UserSchema: Schema = new Schema<UserType>({
         enum: ["user", "provider","admin"],
         default: "user"},
      imageUrl: { type: String , required: false},
+     isProfileSetup: { type: Boolean, default: false },
 }, {
     timestamps: true,
 });
