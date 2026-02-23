@@ -10,6 +10,8 @@ export interface IServiceProvider extends Document {
     imageUrl?: string;
     Useruser_id: mongoose.Types.ObjectId;
     ServiceCategorycatgeory_id: mongoose.Types.ObjectId;
+    price_per_hour: number;
+    review_count: number;
     created_at: Date;
 }
 
@@ -53,6 +55,15 @@ const ServiceProviderSchema = new Schema<IServiceProvider>(
             type: Schema.Types.ObjectId,
             ref: "ServiceCategory",
             required: true,
+        },
+        price_per_hour: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+        review_count: {
+            type: Number,
+            default: 0,
         },
     },
     {
