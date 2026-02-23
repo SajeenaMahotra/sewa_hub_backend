@@ -33,7 +33,8 @@ export class UserService {
             id: user._id,
             fullname: user.fullname,
             email: user.email,
-            role: user.role
+            role: user.role,
+            isProfileSetup: user.isProfileSetup 
         };
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
 

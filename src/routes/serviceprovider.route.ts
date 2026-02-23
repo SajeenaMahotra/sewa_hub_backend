@@ -7,15 +7,12 @@ const router = Router();
 const providerController = new ProviderController();
 
 router.use(authorizedMiddleware);
-
 router.post(
     "/setup-profile",
     uploads.single("image"),
     providerController.setupProfile
 );
-
 router.get("/profile", providerController.getMyProfile);
-
 router.put(
     "/profile",
     uploads.single("image"),
