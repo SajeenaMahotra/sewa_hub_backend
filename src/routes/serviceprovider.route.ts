@@ -6,6 +6,8 @@ import { uploads } from "../middlewares/upload.middleware";
 const router = Router();
 const providerController = new ProviderController();
 
+router.get("/", providerController.getAllProviders);
+
 router.use(authorizedMiddleware);
 router.post(
     "/setup-profile",

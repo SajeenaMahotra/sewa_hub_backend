@@ -48,4 +48,8 @@ export class ProviderService {
         const profile = await providerRepo.getProviderByUserId(userId);
         return !!profile;
     }
+
+    async getAllProviders(page: number, size: number, categoryId?: string) {
+    return await providerRepo.getAllProviders(page, size, undefined, categoryId);
+}
 }

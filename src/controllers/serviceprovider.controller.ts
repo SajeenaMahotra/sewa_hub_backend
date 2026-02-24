@@ -9,7 +9,7 @@ export class ProviderController {
 
     async setupProfile(req: Request, res: Response) {
         console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
+        console.log("FILE:", req.file);
 
         try {
             const userId = req.user?._id;
@@ -90,6 +90,27 @@ export class ProviderController {
                 success: true,
                 message: "Provider profile updated successfully",
                 data: updated,
+            });
+        } catch (error: any) {
+            return res.status(error.statusCode ?? 500).json({
+                success: false,
+                message: error.message || "Internal Server Error",
+            });
+        }
+    }
+
+    async getAllProviders(req: Request, res: Response) {
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const size = parseInt(req.query.size as string) || 12;
+            const categoryId = req.query.categoryId as string | undefined;
+
+            const { providers, total } = await providerService.getAllProviders(page, size, categoryId);
+
+            return res.status(200).json({
+                success: true,
+                message: "Providers fetched successfully",
+                data: { providers, total, page, size },
             });
         } catch (error: any) {
             return res.status(error.statusCode ?? 500).json({
