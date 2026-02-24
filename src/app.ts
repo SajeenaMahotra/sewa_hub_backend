@@ -6,6 +6,7 @@ import path from 'path';
 import adminUserRoutes from "./routes/admin/user.route";
 import providerRouter from "./routes/serviceprovider.route";
 import serviceCategoryRouter from "./routes/servicecategory.route";
+import bookingRoutes from "./routes/booking.route";
 
 
 const app: Application = express();
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin/users', adminUserRoutes);
 app.use("/api/provider", providerRouter);
 app.use('/api/service-categories', serviceCategoryRouter);
+app.use("/api/bookings", bookingRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     return res.status(200).json({ success: "true", message: "Welcome to the API" });

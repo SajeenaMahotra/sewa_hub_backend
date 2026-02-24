@@ -122,7 +122,7 @@ export class ProviderController {
 
     async getProviderById(req: Request, res: Response) {
     try {
-        const { id } = req.params.id as string;
+        const  id  = req.params["id"] as string;
         const provider = await providerService.getProviderById(id);
         return res.status(200).json({
             success: true,
