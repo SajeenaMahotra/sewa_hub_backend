@@ -119,4 +119,21 @@ export class ProviderController {
             });
         }
     }
+
+    async getProviderById(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const provider = await providerService.getProviderById(id);
+        return res.status(200).json({
+            success: true,
+            message: "Provider fetched successfully",
+            data: provider,
+        });
+    } catch (error: any) {
+        return res.status(error.statusCode ?? 500).json({
+            success: false,
+            message: error.message || "Internal Server Error",
+        });
+    }
+}
 }

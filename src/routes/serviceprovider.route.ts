@@ -21,4 +21,6 @@ router.put(
     providerController.updateProfile
 );
 
+router.get("/:id", providerController.getProviderById);
+
 export default router;

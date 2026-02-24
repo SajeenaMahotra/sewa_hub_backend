@@ -50,6 +50,14 @@ export class ProviderService {
     }
 
     async getAllProviders(page: number, size: number, categoryId?: string) {
-    return await providerRepo.getAllProviders(page, size, undefined, categoryId);
+        return await providerRepo.getAllProviders(page, size, undefined, categoryId);
+    }
+
+    async getProviderById(id: string) {
+    const provider = await providerRepo.getProviderById(id);
+    if (!provider) {
+        throw new HttpError(404, "Provider not found");
+    }
+    return provider;
 }
 }
