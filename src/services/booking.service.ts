@@ -2,6 +2,7 @@ import { BookingRepository } from "../repositories/booking.repository";
 import { ServiceProviderRepository } from "../repositories/serviceprovider.repository";
 import { HttpError } from "../errors/http-error";
 import { CreateBookingDTO } from "../dtos/booking.dto";
+import { SEVERITY_MULTIPLIERS, BookingSeverity } from "../types/booking.type";
 
 const bookingRepo = new BookingRepository();
 const providerRepo = new ServiceProviderRepository();
@@ -19,13 +20,20 @@ export class BookingService {
             throw new HttpError(400, "You cannot book yourself");
         }
 
+        const severity = (data.severity ?? "normal") as BookingSeverity;
+        const multiplier = SEVERITY_MULTIPLIERS[severity];
+        const basePrice = provider.price_per_hour;
+        const effectivePrice = parseFloat((basePrice * multiplier).toFixed(2));
+
         return await bookingRepo.createBooking({
             user_id: userId as any,
             provider_id: data.provider_id as any,
             scheduled_at: new Date(data.scheduled_at),
             address: data.address,
             note: data.note,
-            price_per_hour: provider.price_per_hour,  // snapshot at booking time
+            price_per_hour: basePrice,           // base rate — never changes
+            severity,
+            effective_price_per_hour: effectivePrice, // what the customer pays per hour
             status: "pending",
         });
     }

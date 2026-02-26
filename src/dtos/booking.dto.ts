@@ -5,6 +5,7 @@ export const CreateBookingDTO = z.object({
     scheduled_at: z.string().min(1, "Scheduled date & time is required"),  // ISO string from frontend
     address: z.string().min(1, "Address is required"),
     note: z.string().optional(),
+    severity: z.enum(["normal", "emergency", "urgent"]).default("normal"),
 });
 export type CreateBookingDTO = z.infer<typeof CreateBookingDTO>;
 
