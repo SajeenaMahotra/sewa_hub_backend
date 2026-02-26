@@ -8,7 +8,7 @@ export class ChatController {
 
     async sendMessage(req: Request, res: Response) {
         try {
-            const userId = req.user?._id;
+            const userId = req.user?._id?.toString();
             if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
             const parsed = SendMessageDTO.safeParse(req.body);
@@ -24,7 +24,7 @@ export class ChatController {
 
     async getMessages(req: Request, res: Response) {
         try {
-            const userId = req.user?._id;
+            const userId = req.user?._id?.toString();
             if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
             const bookingId = req.params["bookingId"] as string;
@@ -42,7 +42,7 @@ export class ChatController {
 
     async markAsRead(req: Request, res: Response) {
         try {
-            const userId = req.user?._id;
+            const userId = req.user?._id?.toString();
             if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
             const bookingId = req.params["bookingId"] as string;
@@ -55,7 +55,7 @@ export class ChatController {
 
     async getUnreadCount(req: Request, res: Response) {
         try {
-            const userId = req.user?._id;
+            const userId = req.user?._id?.toString();
             if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
             const bookingId = req.params["bookingId"] as string;

@@ -11,7 +11,7 @@ export interface IServiceProvider extends Document {
     Useruser_id: mongoose.Types.ObjectId;
     ServiceCategorycatgeory_id: mongoose.Types.ObjectId;
     price_per_hour: number;
-    review_count: number;
+    ratingCount: number;
     created_at: Date;
 }
 
@@ -61,10 +61,10 @@ const ServiceProviderSchema = new Schema<IServiceProvider>(
             required: true,
             min: 0,
         },
-        review_count: {
-            type: Number,
-            default: 0,
-        },
+        ratingCount: {
+    type: Number,
+    default: 0,
+},
     },
     {
         timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

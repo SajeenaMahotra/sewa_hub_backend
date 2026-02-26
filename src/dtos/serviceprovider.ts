@@ -31,3 +31,8 @@ export const UpdateProviderProfileDTO = z.object({
 });
 
 export type UpdateProviderProfileDTO = z.infer<typeof UpdateProviderProfileDTO>;
+
+export const RateProviderDTO = z.object({
+    rating: z.number().min(1).max(5),
+});
+export type RateProviderDTO = z.infer<typeof RateProviderDTO>;

@@ -22,5 +22,6 @@ router.put(
 );
 
 router.get("/:id", providerController.getProviderById);
+router.post("/rate/:bookingId", providerController.rateProvider);
 
 export default router;

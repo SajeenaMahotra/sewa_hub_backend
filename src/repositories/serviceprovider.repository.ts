@@ -70,4 +70,23 @@ export class ServiceProviderRepository implements IServiceProviderRepository {
         const result = await ServiceProviderModel.findByIdAndDelete(id);
         return result ? true : false;
     }
+
+    async rateProvider(providerId: string, newRating: number): Promise<IServiceProvider | null> {
+    const provider = await ServiceProviderModel.findById(providerId);
+    if (!provider) return null;
+
+    const currentRating = provider.rating ?? 0;
+    const currentCount  = provider.ratingCount ?? 0;
+
+    // Rolling average: ((oldAvg * oldCount) + newRating) / (oldCount + 1)
+    const updatedRating = parseFloat(
+        (((currentRating * currentCount) + newRating) / (currentCount + 1)).toFixed(2)
+    );
+
+    return await ServiceProviderModel.findByIdAndUpdate(
+        providerId,
+        { $set: { rating: updatedRating }, $inc: { ratingCount: 1 } },
+        { new: true }
+    );
+}
 }

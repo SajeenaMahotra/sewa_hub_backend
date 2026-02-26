@@ -16,15 +16,21 @@ const chatService = new ChatService();
  */
 function authenticateSocket(socket: Socket): AuthPayload {
     const token =
-        socket.handshake.auth?.token ??            // { auth: { token: "..." } }
-        socket.handshake.headers?.authorization?.split(" ")[1]; // Bearer <token>
+        socket.handshake.auth?.token ??
+        socket.handshake.headers?.authorization?.split(" ")[1];
 
     if (!token) throw new Error("No token provided");
 
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET not configured");
 
-    return jwt.verify(token, secret) as AuthPayload;
+    const decoded = jwt.verify(token, secret) as any;
+    
+    // Handle different payload shapes — adjust field names to match your JWT
+    const id = decoded._id ?? decoded.id ?? decoded.userId ?? decoded.sub;
+    if (!id) throw new Error("Invalid token payload");
+
+    return { _id: id.toString(), email: decoded.email ?? "" };
 }
 
 export function initChatSocket(httpServer: HttpServer): SocketIOServer {

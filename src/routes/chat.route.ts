@@ -7,9 +7,9 @@ const chatController = new ChatController();
 
 router.use(authorizedMiddleware);
 
-router.post("/", chatController.sendMessage);                         // REST fallback: send message
-router.get("/:bookingId", chatController.getMessages);                // paginated message history
-router.patch("/:bookingId/read", chatController.markAsRead);          // mark as read
-router.get("/:bookingId/unread", chatController.getUnreadCount);      // unread badge count
+router.post("/", (req, res) => chatController.sendMessage(req, res));
+router.get("/:bookingId", (req, res) => chatController.getMessages(req, res));
+router.patch("/:bookingId/read", (req, res) => chatController.markAsRead(req, res));
+router.get("/:bookingId/unread", (req, res) => chatController.getUnreadCount(req, res));
 
 export default router;
