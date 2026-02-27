@@ -3,6 +3,7 @@ import { ServiceProviderRepository } from "../repositories/serviceprovider.repos
 import { HttpError } from "../errors/http-error";
 import { CreateBookingDTO } from "../dtos/booking.dto";
 import { SEVERITY_MULTIPLIERS, BookingSeverity } from "../types/booking.type";
+import { notificationService } from "./notification.service";
 
 const bookingRepo = new BookingRepository();
 const providerRepo = new ServiceProviderRepository();
@@ -25,7 +26,7 @@ export class BookingService {
         const basePrice = provider.price_per_hour;
         const effectivePrice = parseFloat((basePrice * multiplier).toFixed(2));
 
-        return await bookingRepo.createBooking({
+        const booking = await bookingRepo.createBooking({
             user_id: userId as any,
             provider_id: data.provider_id as any,
             scheduled_at: new Date(data.scheduled_at),
@@ -36,6 +37,19 @@ export class BookingService {
             effective_price_per_hour: effectivePrice, // what the customer pays per hour
             status: "pending",
         });
+
+        // Notify the PROVIDER that a new booking was created
+        if (providerUserId) {
+            await notificationService.notify({
+                recipient_id: providerUserId,
+                type: "booking_created",
+                title: "New Booking Request",
+                message: `You have a new ${data.severity} booking request scheduled for ${data.scheduled_at}.`,
+                booking_id: booking._id.toString(),
+            });
+        }
+
+        return booking;
     }
 
     async getMyBookings(userId: string, page: number, size: number) {
@@ -61,12 +75,46 @@ export class BookingService {
             throw new HttpError(403, "Only the provider can update booking status");
         }
 
-        return await bookingRepo.updateStatus(bookingId, status as any);
+        const updated = await bookingRepo.updateStatus(bookingId, status as any);
+
+        // Notify the CUSTOMER that their booking status changed
+        const customerUserId = (booking.user_id as any)?._id?.toString()
+            ?? booking.user_id?.toString();
+
+        const titleMap: Record<string, string> = {
+            accepted:  "Booking Accepted ✅",
+            rejected:  "Booking Rejected ❌",
+            completed: "Booking Completed 🎉",
+        };
+
+        await notificationService.notify({
+            recipient_id: customerUserId,
+            type: `booking_${status}` as any,
+            title: titleMap[status] ?? "Booking Updated",
+            message: `Your booking has been ${status}.`,
+            booking_id: bookingId,
+        });
+
+        return updated;
     }
 
     async cancelBooking(bookingId: string, userId: string) {
         const cancelled = await bookingRepo.cancelBooking(bookingId, userId);
         if (!cancelled) throw new HttpError(400, "Cannot cancel this booking. It may already be accepted or not yours.");
+
+        // Notify the PROVIDER that the booking was cancelled
+        const booking = await bookingRepo.getBookingById(bookingId);
+        const providerUserId = (booking?.provider_id as any)?.Useruser_id?._id?.toString();
+        if (providerUserId) {
+            await notificationService.notify({
+                recipient_id: providerUserId,
+                type: "booking_cancelled",
+                title: "Booking Cancelled",
+                message: "A customer has cancelled their pending booking.",
+                booking_id: bookingId,
+            });
+        }
+
         return cancelled;
     }
 

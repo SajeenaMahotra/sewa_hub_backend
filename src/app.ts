@@ -7,7 +7,8 @@ import adminUserRoutes from "./routes/admin/user.route";
 import providerRouter from "./routes/serviceprovider.route";
 import serviceCategoryRouter from "./routes/servicecategory.route";
 import bookingRoutes from "./routes/booking.route";
-import chatRoutes from "./routes/chat.route";   
+import chatRoutes from "./routes/chat.route"; 
+import notificationRoutes from "./routes/notification.route";  
 
 const app: Application = express();
 
@@ -29,6 +30,7 @@ app.use("/api/provider", providerRouter);
 app.use('/api/service-categories', serviceCategoryRouter);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/chat", chatRoutes);  
+app.use("/api/notifications", notificationRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     return res.status(200).json({ success: "true", message: "Welcome to the API" });
