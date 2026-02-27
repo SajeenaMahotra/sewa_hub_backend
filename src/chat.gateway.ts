@@ -10,10 +10,6 @@ interface AuthPayload {
 
 const chatService = new ChatService();
 
-/**
- * Authenticate the socket handshake using the same JWT strategy
- * as your existing authorizedMiddleware.
- */
 function authenticateSocket(socket: Socket): AuthPayload {
     const token =
         socket.handshake.auth?.token ??
@@ -43,7 +39,7 @@ export function initChatSocket(httpServer: HttpServer): SocketIOServer {
         },
     });
 
-    // ─── Auth middleware ──────────────────────────────────────────────────────
+    //  Auth middleware 
     io.use((socket, next) => {
         try {
             const user = authenticateSocket(socket);
@@ -54,12 +50,12 @@ export function initChatSocket(httpServer: HttpServer): SocketIOServer {
         }
     });
 
-    // ─── Connection handler ───────────────────────────────────────────────────
+    //  Connection handler 
     io.on("connection", (socket: Socket) => {
         const user = (socket as any).user as AuthPayload;
         console.log(`[Chat] User connected: ${user._id} (${socket.id})`);
 
-        // ── Join a booking chat room ──────────────────────────────────────────
+        //  Join a booking chat room 
         // Client emits: socket.emit("join_room", { bookingId })
         socket.on("join_room", async ({ bookingId }: { bookingId: string }) => {
             try {
@@ -75,7 +71,7 @@ export function initChatSocket(httpServer: HttpServer): SocketIOServer {
             }
         });
 
-        // ── Send a message ────────────────────────────────────────────────────
+        //  Send a message
         // Client emits: socket.emit("send_message", { bookingId, content })
         socket.on(
             "send_message",
@@ -97,7 +93,7 @@ export function initChatSocket(httpServer: HttpServer): SocketIOServer {
             }
         );
 
-        // ── Mark messages as read ─────────────────────────────────────────────
+        //  Mark messages as read 
         // Client emits: socket.emit("mark_read", { bookingId })
         socket.on("mark_read", async ({ bookingId }: { bookingId: string }) => {
             try {
@@ -109,7 +105,7 @@ export function initChatSocket(httpServer: HttpServer): SocketIOServer {
             }
         });
 
-        // ── Typing indicators ─────────────────────────────────────────────────
+        //  Typing indicators
         socket.on("typing_start", ({ bookingId }: { bookingId: string }) => {
             socket.to(bookingId).emit("user_typing", { userId: user._id, bookingId });
         });
