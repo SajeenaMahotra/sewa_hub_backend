@@ -32,19 +32,25 @@ export class BookingService {
             scheduled_at: new Date(data.scheduled_at),
             address: data.address,
             note: data.note,
-            price_per_hour: basePrice,           // base rate — never changes
+            price_per_hour: basePrice,
             severity,
-            effective_price_per_hour: effectivePrice, // what the customer pays per hour
+            effective_price_per_hour: effectivePrice,
             status: "pending",
         });
 
         // Notify the PROVIDER that a new booking was created
         if (providerUserId) {
+            const formattedDate = new Date(data.scheduled_at).toLocaleString("en-US", {
+                timeZone: "Asia/Kathmandu",
+                dateStyle: "medium",  // Mar 4, 2026
+                timeStyle: "short",   // 6:00 PM
+            });
+
             await notificationService.notify({
                 recipient_id: providerUserId,
                 type: "booking_created",
                 title: "New Booking Request",
-                message: `You have a new ${data.severity} booking request scheduled for ${data.scheduled_at}.`,
+                message: `You have a new ${severity} booking request scheduled for ${formattedDate} at ${data.address}.`,
                 booking_id: booking._id.toString(),
             });
         }
@@ -82,8 +88,8 @@ export class BookingService {
             ?? booking.user_id?.toString();
 
         const titleMap: Record<string, string> = {
-            accepted:  "Booking Accepted ✅",
-            rejected:  "Booking Rejected ❌",
+            accepted: "Booking Accepted ✅",
+            rejected: "Booking Rejected ❌",
             completed: "Booking Completed 🎉",
         };
 
