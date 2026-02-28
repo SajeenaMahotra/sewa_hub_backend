@@ -4,7 +4,8 @@ import {UserType} from "../types/user.type.js";
 const UserSchema: Schema = new Schema<UserType>({
     fullname: {type: String, required: true, maxlength: 100},
     email: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
+    password: {type: String, required: false},
+    googleId: { type: String, required: false },
     role: { 
         type: String,
         enum: ["user", "provider","admin"],
@@ -16,6 +17,7 @@ const UserSchema: Schema = new Schema<UserType>({
 });
 export interface IUser extends UserType, Document {
     _id: mongoose.Types.ObjectId;
+    googleId?: string;
     createdAt: Date;
     updatedAt: Date;
 }
