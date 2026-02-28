@@ -15,8 +15,10 @@ export class UserService {
         if (emailCheck) {
             throw new HttpError(403, "Email already in use");
         }
-        const hashedPassword = await bcryptjs.hash(data.password, 10); // 10 - complexity
-        data.password = hashedPassword;
+        // Only hash if password exists
+    if (data.password) {
+        data.password = await bcryptjs.hash(data.password, 10);
+    }
 
         const newUser = await userRepository.createUser(data);
         return newUser;
@@ -25,6 +27,10 @@ export class UserService {
     async loginUser(data: LoginUserDTO) {
         const user = await userRepository.getUserByEmail(data.email);
         if (!user) throw new HttpError(404, "User not found");
+
+        if (!user.password) {
+        throw new HttpError(400, "This account uses Google sign-in. Please use Google to login.");
+    }
 
         const validPassword = await bcryptjs.compare(data.password, user.password);
         if (!validPassword) throw new HttpError(401, "Invalid credentials");
@@ -102,5 +108,30 @@ export class UserService {
             throw new HttpError(400, "Invalid or expired token");
         }
     }
+
+    async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await userRepository.getUserById(userId);
+    if (!user) throw new HttpError(404, "User not found");
+
+    // Google-only users have no password
+    if (!user.password) {
+        throw new HttpError(400, "This account uses Google sign-in. Please set a password first.");
+    }
+
+    const isMatch = await bcryptjs.compare(currentPassword, user.password);
+    if (!isMatch) throw new HttpError(401, "Current password is incorrect");
+
+    const hashedPassword = await bcryptjs.hash(newPassword, 10);
+    await userRepository.updateUser(userId, { password: hashedPassword });
+
+    return { message: "Password changed successfully" };
+}
+
+async deleteAccount(userId: string) {
+    const user = await userRepository.getUserById(userId);
+    if (!user) throw new HttpError(404, "User not found");
+    await userRepository.deleteUser(userId);
+    return { message: "Account deleted successfully" };
+}
 
 }

@@ -72,5 +72,10 @@ export class UserRepository implements IUserRepository {
         const result = await UserModel.findByIdAndDelete(id);
         return result ? true : false;
     }
+
+    async getUserByGoogleId(googleId: string): Promise<IUser | null> {
+    return await UserModel.findOne({ googleId });
+}
+
 }
 
