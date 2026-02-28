@@ -8,7 +8,9 @@ import providerRouter from "./routes/serviceprovider.route";
 import serviceCategoryRouter from "./routes/servicecategory.route";
 import bookingRoutes from "./routes/booking.route";
 import chatRoutes from "./routes/chat.route"; 
-import notificationRoutes from "./routes/notification.route";  
+import notificationRoutes from "./routes/notification.route"; 
+import passport from "./config/passport";
+
 
 const app: Application = express();
 
@@ -21,6 +23,7 @@ app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
