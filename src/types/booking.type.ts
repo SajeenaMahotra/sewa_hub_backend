@@ -15,9 +15,10 @@ export const BookingSchema = z.object({
     scheduled_at: z.date(),
     address: z.string().min(1),
     note: z.string().optional(),
-    price_per_hour: z.number().min(0),          // base price 
+    phone_number: z.string().min(10),           
+    price_per_hour: z.number().min(0),
     severity: z.enum(["normal", "emergency", "urgent"]).default("normal"),
-    effective_price_per_hour: z.number().min(0), // base × multiplier
+    effective_price_per_hour: z.number().min(0),
     status: z.enum(["pending", "accepted", "rejected", "completed", "cancelled"]).default("pending"),
 });
 

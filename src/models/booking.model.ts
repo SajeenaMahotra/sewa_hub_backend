@@ -23,9 +23,13 @@ const BookingSchema: Schema = new Schema<BookingType>({
     note: {
         type: String,
     },
+    phone_number: {
+        type: String,
+        required: true,                         // ← new
+    },
     price_per_hour: {
         type: Number,
-        required: true,                          // base rate snapshot
+        required: true,
     },
     severity: {
         type: String,
@@ -35,7 +39,7 @@ const BookingSchema: Schema = new Schema<BookingType>({
     },
     effective_price_per_hour: {
         type: Number,
-        required: true,                          // price_per_hour × multiplier
+        required: true,
     },
     status: {
         type: String,
