@@ -2,7 +2,7 @@ import { HttpError } from "../errors/http-error";
 import { CreateProviderProfileDTO, UpdateProviderProfileDTO } from "../dtos/serviceprovider";
 import { ServiceProviderRepository } from "../repositories/serviceprovider.repository";
 import { UserRepository } from "../repositories/user.repository";
-import { BookingRepository } from "../repositories/booking.repository"; 
+import { BookingRepository } from "../repositories/booking.repository";
 
 const bookingRepo = new BookingRepository();
 const providerRepo = new ServiceProviderRepository();
@@ -56,25 +56,30 @@ export class ProviderService {
     }
 
     async getProviderById(id: string) {
-    const provider = await providerRepo.getProviderById(id);
-    if (!provider) {
-        throw new HttpError(404, "Provider not found");
+        const provider = await providerRepo.getProviderById(id);
+        if (!provider) {
+            throw new HttpError(404, "Provider not found");
+        }
+        return provider;
     }
-    return provider;
-}
 
-async rateProvider(bookingId: string, userId: string, rating: number) {
-    // Only the user who made the booking can rate, and only if completed
-    const booking = await bookingRepo.getBookingById(bookingId);
-    if (!booking) throw new HttpError(404, "Booking not found");
+    async rateProvider(bookingId: string, userId: string, rating: number) {
+        const booking = await bookingRepo.getBookingById(bookingId);
+        if (!booking) throw new HttpError(404, "Booking not found");
 
-    const bookingUserId = (booking.user_id as any)?._id?.toString() ?? booking.user_id?.toString();
-    if (bookingUserId !== userId) throw new HttpError(403, "Not your booking");
-    if (booking.status !== "completed") throw new HttpError(400, "Can only rate completed bookings");
+        const bookingUserId = (booking.user_id as any)?._id?.toString()
+            ?? booking.user_id?.toString();
 
-    const providerId = (booking.provider_id as any)?._id?.toString() ?? booking.provider_id?.toString();
-    const updated = await providerRepo.rateProvider(providerId, rating);
-    if (!updated) throw new HttpError(404, "Provider not found");
-    return updated;
-}
+        if (bookingUserId !== userId.toString())
+            throw new HttpError(403, "Not your booking");
+
+        if (booking.status !== "completed")
+            throw new HttpError(400, "Can only rate completed bookings");
+
+        const providerId = (booking.provider_id as any)?._id?.toString()
+            ?? booking.provider_id?.toString();
+        const updated = await providerRepo.rateProvider(providerId, rating);
+        if (!updated) throw new HttpError(404, "Provider not found");
+        return updated;
+    }
 }

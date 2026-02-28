@@ -121,36 +121,38 @@ export class ProviderController {
     }
 
     async getProviderById(req: Request, res: Response) {
-    try {
-        const  id  = req.params["id"] as string;
-        const provider = await providerService.getProviderById(id);
-        return res.status(200).json({
-            success: true,
-            message: "Provider fetched successfully",
-            data: provider,
-        });
-    } catch (error: any) {
-        return res.status(error.statusCode ?? 500).json({
-            success: false,
-            message: error.message || "Internal Server Error",
-        });
+        try {
+            const id = req.params["id"] as string;
+            const provider = await providerService.getProviderById(id);
+            return res.status(200).json({
+                success: true,
+                message: "Provider fetched successfully",
+                data: provider,
+            });
+        } catch (error: any) {
+            return res.status(error.statusCode ?? 500).json({
+                success: false,
+                message: error.message || "Internal Server Error",
+            });
+        }
     }
-}
 
-async rateProvider(req: Request, res: Response) {
-    try {
-        const userId    = req.user?._id;
-        if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+    // serviceprovider.controller.ts
+    async rateProvider(req: Request, res: Response) {
+        try {
+            const userId = req.user?._id;
+            if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-        const bookingId = req.params["bookingId"] as string;
-        const parsed    = RateProviderDTO.safeParse(req.body);
-        if (!parsed.success)
-            return res.status(400).json({ success: false, message: z.prettifyError(parsed.error) });
+            const bookingId = req.params["bookingId"] as string;
+            const parsed = RateProviderDTO.safeParse(req.body);
+            if (!parsed.success)
+                return res.status(400).json({ success: false, message: z.prettifyError(parsed.error) });
 
-        const updated = await providerService.rateProvider(bookingId, userId, parsed.data.rating);
-        return res.status(200).json({ success: true, message: "Rating submitted", data: updated });
-    } catch (error: any) {
-        return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
+
+            const updated = await providerService.rateProvider(bookingId, userId.toString(), parsed.data.rating);
+            return res.status(200).json({ success: true, message: "Rating submitted", data: updated });
+        } catch (error: any) {
+            return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
+        }
     }
-}
 }

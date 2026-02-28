@@ -20,8 +20,8 @@ router.put(
     uploads.single("image"),
     providerController.updateProfile
 );
-
-router.get("/:id", providerController.getProviderById);
 router.post("/rate/:bookingId", providerController.rateProvider);
+router.get("/:id", providerController.getProviderById);
+
 
 export default router;
