@@ -19,7 +19,6 @@ export class UserService {
     if (data.password) {
         data.password = await bcryptjs.hash(data.password, 10);
     }
-
         const newUser = await userRepository.createUser(data);
         return newUser;
     }

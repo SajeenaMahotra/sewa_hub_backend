@@ -11,9 +11,9 @@ export class AdminUserService {
         if(emailCheck){
             throw new HttpError(403, "Email already in use");
         }
-        // hash password
-        const hashedPassword = await bcryptjs.hash(data.password, 10);
-        data.password = hashedPassword;
+         if (data.password) {
+               data.password = await bcryptjs.hash(data.password, 10);
+           }
 
         const newUser = await userRepository.createUser(data);
         return newUser;

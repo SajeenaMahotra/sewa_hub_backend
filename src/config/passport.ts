@@ -1,7 +1,6 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { UserModel } from "../models/user.model";
-// ✅ Remove JWT_SECRET import - not needed here
 
 passport.use(
     new GoogleStrategy(
@@ -24,7 +23,6 @@ passport.use(
 
                 if (user) {
                     if (!user.googleId) {
-                        // ✅ use updateOne to avoid type error
                         await UserModel.updateOne(
                             { _id: user._id },
                             { $set: { googleId: profile.id } }

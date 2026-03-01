@@ -11,23 +11,27 @@ const userRepo = new UserRepository();
 export class ProviderService {
 
     async setupProfile(userId: string, data: CreateProviderProfileDTO & { imageUrl?: string }) {
-        const existing = await providerRepo.getProviderByUserId(userId);
-        if (existing) {
-            throw new HttpError(409, "Provider profile already exists");
-        }
-
-        const profile = await providerRepo.createProvider({
-            ...data,
-            Useruser_id: userId as any,
-            ServiceCategorycatgeory_id: data.serviceCategoryId as any,
-            is_verified: 0,
-            rating: 0,
-        });
-
-        await userRepo.updateUser(userId, { isProfileSetup: true } as any);
-
-        return profile;
+    const existing = await providerRepo.getProviderByUserId(userId);
+    if (existing) {
+        throw new HttpError(409, "Provider profile already exists");
     }
+
+    const profile = await providerRepo.createProvider({
+        ...data,
+        Useruser_id: userId as any,
+        ServiceCategorycatgeory_id: data.serviceCategoryId as any,
+        is_verified: 0,
+        rating: 0,
+    });
+
+    // FIX: also set role: "provider" so DB is always consistent
+    await userRepo.updateUser(userId, {
+        isProfileSetup: true,
+        role: "provider",    // <-- this was missing
+    } as any);
+
+    return profile;
+}
 
     async getProfileByUserId(userId: string) {
         const profile = await providerRepo.getProviderByUserId(userId);
