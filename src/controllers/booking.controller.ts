@@ -94,4 +94,17 @@ export class BookingController {
             return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
         }
     }
+
+    async deleteBooking(req: Request, res: Response) {
+    try {
+        const userId = req.user?._id;
+        if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+        const bookingId = req.params["id"] as string;
+        const deleted = await bookingService.deleteBooking(bookingId, userId);
+        return res.status(200).json({ success: true, message: "Booking deleted", data: deleted });
+    } catch (error: any) {
+        return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
+    }
+}
 }

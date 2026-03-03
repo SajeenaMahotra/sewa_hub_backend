@@ -125,4 +125,13 @@ export class BookingService {
         if (!booking) throw new HttpError(404, "Booking not found");
         return booking;
     }
+
+    async deleteBooking(bookingId: string, userId: string) {
+    const deleted = await bookingRepo.deleteBooking(bookingId, userId);
+    if (!deleted) throw new HttpError(
+        400,
+        "Cannot delete this booking. It must be cancelled or rejected first."
+    );
+    return deleted;
+}
 }

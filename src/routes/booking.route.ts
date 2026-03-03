@@ -5,12 +5,12 @@ import { authorizedMiddleware } from "../middlewares/authorized.middleware";
 const router = Router();
 const bookingController = new BookingController();
 
-router.use(authorizedMiddleware);  // all booking routes require auth
+router.use(authorizedMiddleware);  
 
-router.post("/", bookingController.createBooking);       // customer: create
-router.get("/mybooking", bookingController.getMyBookings);       // customer: my bookings
-router.get("/provider", bookingController.getProviderBookings); // provider: incoming bookings
-router.patch("/:id/status", bookingController.updateStatus);        // provider: accept/reject/complete
-router.patch("/:id/cancel", bookingController.cancelBooking);       // customer: cancel pending
-
+router.post("/", bookingController.createBooking);      
+router.get("/mybooking", bookingController.getMyBookings);       
+router.get("/provider", bookingController.getProviderBookings);
+router.patch("/:id/status", bookingController.updateStatus);       
+router.patch("/:id/cancel", bookingController.cancelBooking);     
+router.delete("/:id", bookingController.deleteBooking);
 export default router;

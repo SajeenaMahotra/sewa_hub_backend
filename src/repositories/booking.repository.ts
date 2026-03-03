@@ -72,4 +72,13 @@ export class BookingRepository {
             { new: true }
         );
     }
+
+    async deleteBooking(id: string, userId: string): Promise<IBooking | null> {
+        // Only owner can delete, and only if cancelled or rejected
+        return await BookingModel.findOneAndDelete({
+            _id: id,
+            user_id: userId,
+            status: { $in: ["cancelled", "rejected"] },
+        });
+    }
 }
