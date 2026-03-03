@@ -113,7 +113,7 @@ describe('Admin User Management Integration Tests', () => {
 
             expect(user).toBeTruthy();
             expect(user?.password).not.toBe('NewPass123!');
-            expect(user?.password.length).toBeGreaterThan(20);
+            expect(user?.password?.length).toBeGreaterThan(20);
         });
 
     });

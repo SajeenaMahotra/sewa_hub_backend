@@ -120,7 +120,8 @@ describe(
 
                     expect(user).toBeTruthy();
                     expect(user?.password).not.toBe(testUser.password);
-                    expect(user?.password.length).toBeGreaterThan(20);
+                    expect(user?.password).toBeDefined();
+                    expect(user?.password?.length).toBeGreaterThan(20);
                 });
 
             }
