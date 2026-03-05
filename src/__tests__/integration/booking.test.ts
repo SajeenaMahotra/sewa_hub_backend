@@ -78,7 +78,6 @@ describe("Booking Integration Tests", () => {
 
   // CREATE BOOKING
   
-
   test("should create booking successfully", async () => {
     const response = await request(app)
       .post("/api/bookings")

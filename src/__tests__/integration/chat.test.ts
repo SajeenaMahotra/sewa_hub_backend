@@ -28,7 +28,6 @@ describe("Chat API", () => {
   await ServiceProviderModel.deleteMany({});
   await UserModel.deleteMany({});
 
-  // ─── Create User ───────────────────────────────────────
   const user = await UserModel.create({
     fullname: "User One",
     email: "user@test.com",
@@ -41,7 +40,7 @@ describe("Chat API", () => {
     JWT_SECRET
   );
 
-  // ─── Create Provider User ──────────────────────────────
+  //  Create Provider User 
   const providerUser = await UserModel.create({
     fullname: "Provider One",
     email: "provider@test.com",
@@ -54,7 +53,6 @@ describe("Chat API", () => {
     JWT_SECRET
   );
 
-  // ─── Create Outsider User ─────────────────────────────
   const outsider = await UserModel.create({
     fullname: "Outsider",
     email: "outsider@test.com",

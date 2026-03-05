@@ -21,7 +21,7 @@ beforeAll(async () => {
 
   const hashedPassword = await bcrypt.hash("password123", 10);
 
-  // ── Seed primary user ──────────────────────────────────────────
+  //  Seed primary user 
   const user = await UserModel.create({
     fullname: "Notif User",
     email: `notifuser_${Date.now()}@test.com`,
@@ -34,7 +34,7 @@ beforeAll(async () => {
     process.env.JWT_SECRET as string
   );
 
-  // ── Seed other user (for isolation tests) ─────────────────────
+  //  Seed other user (for isolation tests) 
   const otherUser = await UserModel.create({
     fullname: "Other User",
     email: `othernotif_${Date.now()}@test.com`,
@@ -79,7 +79,7 @@ beforeAll(async () => {
   });
   bookingId = booking._id.toString();
 
-  // ── Seed multiple notifications for the primary user ──────────
+  //  Seed multiple notifications for the primary user 
   const notifications = await NotificationModel.insertMany([
     {
       recipient_id: user._id,
