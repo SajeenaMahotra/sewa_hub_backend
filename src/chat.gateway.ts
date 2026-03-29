@@ -46,7 +46,7 @@ export function initChatSocket(httpServer: HttpServer): SocketIOServer {
     const io = new SocketIOServer(httpServer, {
         path: "/socket.io",
         cors: {
-            origin: ["http://localhost:3000", "http://localhost:3003", "http://localhost:3005"],
+            origin: ["http://localhost:3000", "http://localhost:3003", "http://localhost:3005",'https://sewa-hub-frontend-m2yn.vercel.app'],
             methods: ["GET", "POST"],
             credentials: true,
         },

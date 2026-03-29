@@ -15,7 +15,7 @@ import passport from "./config/passport";
 const app: Application = express();
 
 const corsOptions = {
-    origin:[ 'http://localhost:3000', 'http://localhost:3003', 'http://localhost:3005' ],
+    origin:[ 'http://localhost:3000', 'http://localhost:3003', 'http://localhost:3005','https://sewa-hub-frontend-m2yn.vercel.app' ],
     optionsSuccessStatus: 200,
     credentials: true,
 };
